@@ -13,8 +13,30 @@
           }
         );
 
-        const width = 600;
-        const height = 600;
+        const width = 512;
+        const height = 512;
+
+        let x = 0
+        let y = 0
+        let speed = 128
+
+        window.addEventListener('keydown', check,false);
+
+        function check(e) {
+            var code = e.keyCode;
+            switch (code) {
+                case 37: x -= speed; break;
+                case 38: y -= speed; break;
+                case 39: x += speed; break;
+                case 40: y += speed; break;
+            }
+            if(x < 0) {
+              x = 0
+            }
+            if(y < 0) {
+              y = 0
+            }
+        }
 
         const canvas = document.getElementById("demo-canvas");
         canvas.width = width;
@@ -33,7 +55,7 @@
         const ctx = canvas.getContext("2d");
 
         const render = () => {
-          instance.exports.go();
+          instance.exports.go(x, y);
           ctx.putImageData(image, 0, 0);
           requestAnimationFrame(render);
         };
@@ -44,13 +66,39 @@
       init();
     </script>
     <style type="text/css" media="screen">
-      body {
-        max-width: 600px;
-        margin: 200px auto;
+      h2 {
+        text-align: center;
+        margin: 0;
       }
+      p {
+        margin: 0.5em 0;
+        margin-bottom: 1em;
+      }
+      body {
+        max-width: 512px;
+        background: #0d0e0f;
+        color: #ebdbb2;
+        font-family: 'inter', system-ui, sans-serif;
+        font-size: 1em;
+        margin: 40px auto;
+      }
+      a, a:active, a:visited {
+        color: #b16286;
+        background-color: #1d2021;
+      }
+      a:hover {
+          color: white;
+          background-color: #b16286;
+      }
+
     </style>
   </head>
   <body>
-    <canvas id="demo-canvas"></canvas>
+    <h2>World of WASM!</h2>
+    <p>
+      Everything inside this world is procedurally generated with only <a href="https://gitlab.com/knarkzel/wasm-graphics/-/blob/master/www/bare_metal_wasm.wasm" target="_blank">350 bytes</a>.
+      Can you find the pattern?
+    </p>
+    <canvas id="demo-canvas" tabindex="1"></canvas>
   </body>
 </html>

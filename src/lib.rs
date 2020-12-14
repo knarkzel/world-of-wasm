@@ -24,8 +24,8 @@ fn tan(x: f32) -> f32 {
     sin(x) / (cos(x))
 }
 
-const WIDTH: usize = 600;
-const HEIGHT: usize = 600;
+const WIDTH: usize = 512;
+const HEIGHT: usize = 512;
 const ZOOM: f32 = 1.;
 
 #[no_mangle]
@@ -34,18 +34,20 @@ static mut BUFFER: [u32; WIDTH * HEIGHT] = [0; WIDTH * HEIGHT];
 static FRAME: AtomicU32 = AtomicU32::new(0);
 
 #[no_mangle]
-pub unsafe extern fn go() {
-    render_frame_safe(&mut BUFFER)
+pub unsafe extern fn go(x: usize, y: usize) {
+    render_frame_safe(&mut BUFFER, x, y)
 }
 
-fn render_frame_safe(buffer: &mut [u32; WIDTH * HEIGHT]) {
+fn render_frame_safe(buffer: &mut [u32; WIDTH * HEIGHT], x1: usize, y1: usize) {
     let f = FRAME.fetch_add(1, Ordering::Relaxed);
 
-    for y in 0..HEIGHT {
-        for x in 0..WIDTH {
+    for y2 in 0..HEIGHT {
+        for x2 in 0..WIDTH {
+            let x = x1 + x2;
+            let y = y1 + y2;
             let value = (x ^ y) as f32 * ZOOM;
-            buffer[y * WIDTH + x] = f.wrapping_add(value as u32) | 0xFF_00_00_00;
-            buffer[y * WIDTH + x] ^= buffer[y * WIDTH + x] << (tan((x | y) as f32) * ZOOM) as usize;
+            buffer[y2 * WIDTH + x2] = f.wrapping_add(value as u32) | 0xFF_00_00_00;
+            buffer[y2 * WIDTH + x2] ^= buffer[y2 * WIDTH + x2] << (tan((x | y) as f32) * ZOOM) as usize;
         }
     }
 }
