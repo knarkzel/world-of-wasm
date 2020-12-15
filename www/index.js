@@ -13,6 +13,8 @@ async function init() {
 
   let x = 0
   let y = 0
+  let targetX = 0
+  let targetY = 0
   let speed = 128
 
   window.addEventListener('keydown', check,false);
@@ -20,16 +22,10 @@ async function init() {
   function check(e) {
       var code = e.keyCode;
       switch (code) {
-          case 37: x -= speed; break;
-          case 38: y -= speed; break;
-          case 39: x += speed; break;
-          case 40: y += speed; break;
-      }
-      if(x < 0) {
-        x = 0
-      }
-      if(y < 0) {
-        y = 0
+          case 37: targetX -= speed; break;
+          case 38: targetY -= speed; break;
+          case 39: targetX += speed; break;
+          case 40: targetY += speed; break;
       }
   }
 
@@ -52,6 +48,14 @@ async function init() {
   const render = () => {
     instance.exports.go(x, y);
     ctx.putImageData(image, 0, 0);
+    x += Math.round((targetX - x) / 8)
+    y += Math.round((targetY - y) / 8)
+    if(targetX <= 0) {
+      targetX += -targetX / 8
+    }
+    if(targetY <= 0) {
+      targetY += -targetY / 8
+    }
     requestAnimationFrame(render);
   };
 
