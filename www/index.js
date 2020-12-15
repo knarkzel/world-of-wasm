@@ -51,10 +51,10 @@ async function init() {
     x += Math.round((targetX - x) / 8)
     y += Math.round((targetY - y) / 8)
     if(targetX <= 0) {
-      targetX += -targetX / 8
+      targetX -= targetX / 2
     }
     if(targetY <= 0) {
-      targetY += -targetY / 8
+      targetY -= targetY / 2
     }
     requestAnimationFrame(render);
   };
