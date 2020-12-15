@@ -1,7 +1,9 @@
 #![no_std]
 
 use core::sync::atomic::{AtomicU32, Ordering};
-use core::f32::consts::PI;
+
+const WIDTH: usize = 512;
+const HEIGHT: usize = 512;
 
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
@@ -9,24 +11,12 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 }
 
 extern {
-    fn js_sin(x: f32) -> f32;
-}
-
-fn sin(x: f32) -> f32 {
-    unsafe { js_sin(x) }
-}
-
-fn cos(x: f32) -> f32 {
-    sin(x - PI / 2.)
+    fn js_tan(x: f32) -> f32;
 }
 
 fn tan(x: f32) -> f32 {
-    sin(x) / (cos(x))
+    unsafe { js_tan(x) }
 }
-
-const WIDTH: usize = 512;
-const HEIGHT: usize = 512;
-const ZOOM: f32 = 1.;
 
 #[no_mangle]
 static mut BUFFER: [u32; WIDTH * HEIGHT] = [0; WIDTH * HEIGHT];
@@ -45,9 +35,8 @@ fn render_frame_safe(buffer: &mut [u32; WIDTH * HEIGHT], x1: usize, y1: usize) {
         for x2 in 0..WIDTH {
             let x = x1 + x2;
             let y = y1 + y2;
-            let value = (x ^ y) as f32 * ZOOM;
-            buffer[y2 * WIDTH + x2] = f.wrapping_add(value as u32) | 0xFF_00_00_00;
-            buffer[y2 * WIDTH + x2] ^= buffer[y2 * WIDTH + x2] << (tan((x | y) as f32) * ZOOM) as usize;
+            buffer[y2 * WIDTH + x2] = f.wrapping_add((x ^ y) as u32) | 0xFF_00_00_00;
+            buffer[y2 * WIDTH + x2] ^= buffer[y2 * WIDTH + x2] << tan((x | y) as f32) as usize;
         }
     }
 }
