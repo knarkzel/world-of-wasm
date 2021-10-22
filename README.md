@@ -4,4 +4,4 @@
 procedurally generated world of triangles embodied inside triangles with
 pseudo-random colors from the rainbow resulting in one big cohesive pattern.
 
- ![world-of-wasm](world-of-wasm.webp)
+ ![world-of-wasm](world-of-wasm.webp | width=250)
