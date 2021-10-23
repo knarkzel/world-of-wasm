@@ -1,6 +1,6 @@
 async function init() {
   const { instance } = await WebAssembly.instantiateStreaming(
-    fetch("./bare_metal_wasm.wasm"),
+    fetch("./world_of_wasm.wasm"),
     {
       "env": {
         "js_tan": Math.tan,
